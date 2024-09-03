@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: user_management
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  # MailHog Service
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"  # Web UI for viewing emails
+      - "1025:1025"  # SMTP server port
+    networks:
+      - backend
+
+  # Application Service
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/user_management
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: 1025
+    depends_on:
+      - db
+      - mailhog
+    networks:
+      - backend
+
+# Define Docker volumes
+volumes:
+  postgres_data:
+
+# Define Docker networks
+networks:
+  backend:
