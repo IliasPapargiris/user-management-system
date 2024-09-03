@@ -13,14 +13,6 @@ public enum Role {
 
     private final String value;
 
-//    Role(String value) {
-//        this.value = value;
-//    }
-
-//    public String getValue() {
-//        return value;
-//    }
-
     private static final Map<String, Role> ROLE_MAP = new HashMap<>();
 
     // Static block to populate the HashMap
